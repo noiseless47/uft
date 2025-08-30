@@ -1,0 +1,34 @@
+experiment_name: "week1_baseline_stage1"
+run_name: "rf_temporalcv_calibrated"
+random_seed: 42
+
+data_config: "configs/data.yaml"
+
+# Labeling: Player selected to 20–25 preliminary squad for a match context.
+label:
+  column: "selected_squad"   # expected in engineered features (boolean)
+  positive_class: 1
+
+# Train split
+cv:
+  n_folds: 5
+  min_train_seasons: 1      # ensure at least 1 season in train before first fold
+  gap_days: 2               # temporal gap to avoid leakage
+
+# Model (RandomForest for Week-1 sanity)
+model:
+  type: "random_forest"
+  params:
+    n_estimators: 400
+    max_depth: null
+    min_samples_leaf: 2
+    n_jobs: -1
+    class_weight: "balanced_subsample"
+
+# Calibration: isotonic (fallback to sigmoid if low samples)
+calibration:
+  method: "auto"   # "auto" | "isotonic" | "sigmoid"
+
+# Outputs
+artifacts_dir: "outputs/artifacts/week1_baseline"
+figures_dir: "outputs/figures"

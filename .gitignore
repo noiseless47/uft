@@ -1,0 +1,10 @@
+__pycache__/
+*.pyc
+.env
+mlruns/
+data/interim/
+data/processed/
+outputs/
+.mplconfig/
+.ipynb_checkpoints/
+.sqlite
