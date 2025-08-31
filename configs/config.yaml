@@ -1,0 +1,191 @@
+# Football Squad Selection - Main Configuration
+# Version: 1.0
+# Last Updated: 2025-08-30
+
+# Global Settings
+project:
+  name: "football-squad-selection"
+  version: "1.0.0"
+  description: "Two-tier ML framework for football squad selection"
+
+# Random Seeds (for reproducibility)
+random_seeds:
+  global: 42
+  data_split: 123
+  model_training: 456
+  simulation: 789
+  feature_selection: 321
+
+# Data Configuration
+data:
+  version: "v1.0"
+  sources:
+    - "statsbomb"
+    - "fbref" 
+    - "fivethirtyeight"
+  
+  # Temporal splits
+  temporal_cv:
+    n_splits: 5
+    gap_days: 7
+    test_size_days: 30
+    min_train_matches: 100
+  
+  # Feature windows
+  feature_windows:
+    short: 3
+    medium: 5
+    long: 10
+  
+  # Data validation
+  validation:
+    min_matches_per_player: 5
+    max_missing_rate: 0.3
+    outlier_threshold: 3.0
+
+# Stage-1 Configuration (Player Selection Probability)
+stage1:
+  models:
+    random_forest:
+      n_estimators: 500
+      max_depth: 15
+      min_samples_split: 10
+      min_samples_leaf: 5
+      max_features: "sqrt"
+      class_weight: "balanced"
+      
+    xgboost:
+      n_estimators: 1000
+      max_depth: 8
+      learning_rate: 0.1
+      subsample: 0.8
+      colsample_bytree: 0.8
+      reg_alpha: 0.1
+      reg_lambda: 1.0
+      
+    lightgbm:
+      n_estimators: 1000
+      max_depth: 10
+      learning_rate: 0.1
+      num_leaves: 100
+      subsample: 0.8
+      colsample_bytree: 0.8
+      reg_alpha: 0.1
+      reg_lambda: 1.0
+      
+  # Calibration
+  calibration:
+    method: "isotonic"  # or "platt"
+    cv_folds: 3
+    
+  # Feature selection
+  feature_selection:
+    method: "mab"  # multi-armed bandit
+    n_arms: 10
+    exploration_rate: 0.1
+    
+  # Evaluation metrics
+  metrics:
+    primary: "pr_auc"
+    secondary: ["roc_auc", "brier_score", "ece"]
+
+# Stage-2 Configuration (XI + 7 Selection)
+stage2:
+  model:
+    type: "lightgbm"
+    n_estimators: 500
+    max_depth: 8
+    learning_rate: 0.05
+    
+  # Compatibility matrix
+  compatibility:
+    method: "matrix_factorization"
+    algorithm: "als"  # Alternating Least Squares
+    factors: 32
+    regularization: 0.1
+    iterations: 50
+    
+  # Optimization constraints
+  optimizer:
+    solver: "pulp"  # or "ortools"
+    time_limit: 60  # seconds
+    formations:
+      - "4-3-3"
+      - "4-2-3-1" 
+      - "3-5-2"
+    constraints:
+      min_gk: 1
+      max_gk: 2
+      min_def: 3
+      min_mid: 2
+      min_fwd: 1
+      bench_coverage: true
+
+# Transfer Learning
+transfer_learning:
+  enabled: true
+  pretrain_matches: 10000
+  finetune_epochs: 50
+  learning_rate_decay: 0.9
+  
+# Multi-Armed Bandit Feature Selection
+mab:
+  algorithm: "thompson_sampling"  # or "ucb1"
+  arms:
+    - "performance_only"
+    - "performance_fitness"
+    - "performance_fitness_opponent"
+    - "full_feature_set"
+    - "compatibility_enhanced"
+  update_frequency: 10  # matches
+  
+# Monte Carlo Simulation
+simulation:
+  n_simulations: 5000
+  goal_model: "poisson"
+  home_advantage: 0.3
+  variance_adjustment: true
+  
+# Hyperparameter Optimization
+hpo:
+  framework: "optuna"
+  n_trials: 200
+  timeout: 3600  # seconds
+  pruner: "median"
+  sampler: "tpe"
+  
+# Experiment Tracking
+mlflow:
+  tracking_uri: "file:./experiments/mlflow"
+  experiment_name: "football-squad-selection"
+  auto_log: true
+  
+# Logging
+logging:
+  level: "INFO"
+  format: "%(asctime)s - %(name)s - %(levelname)s - %(message)s"
+  file: "logs/pipeline.log"
+  
+# Performance
+performance:
+  n_jobs: -1
+  batch_size: 1000
+  memory_limit: "8GB"
+  
+# Flags for development
+flags:
+  simulate_only: false
+  fast_demo: false
+  dry_run: false
+  debug_mode: false
+  
+# Paths
+paths:
+  data_raw: "data/raw"
+  data_processed: "data/processed"
+  data_features: "data/features"
+  artifacts: "artifacts"
+  models: "artifacts"
+  experiments: "experiments"
+  figures: "paper/figures"
+  tables: "paper/tables"

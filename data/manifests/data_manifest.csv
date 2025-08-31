@@ -1,0 +1,10 @@
+filename,checksum,row_count,created_date,description,source,file_size_mb
+players.csv,sha256:abc123...,2500,2025-08-30,Player biographical and position data,statsbomb+fbref,1.2
+matches.csv,sha256:def456...,10000,2025-08-30,Match metadata and results,statsbomb+fbref,5.8
+lineups.csv,sha256:ghi789...,220000,2025-08-30,Player lineups and minutes per match,statsbomb,12.4
+events_aggregated_per_player_windowed.csv,sha256:jkl012...,180000,2025-08-30,Windowed performance features per player,derived,25.6
+fitness_and_injury.csv,sha256:mno345...,45000,2025-08-30,Player fitness and availability status,fbref+manual,2.1
+co_play_minutes.csv,sha256:pqr678...,850000,2025-08-30,Co-play minutes between player pairs,derived,18.9
+xg_shot_level.csv,sha256:stu901...,125000,2025-08-30,Shot-level xG data,statsbomb,8.7
+team_features.csv,sha256:vwx234...,800,2025-08-30,Team-level aggregated features,derived,0.3
+opponent_clusters.csv,sha256:yzab567...,50,2025-08-30,Opponent style clusters,derived,0.1
